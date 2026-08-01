@@ -1,118 +1,88 @@
 --q1
-create table EmpTest as select * from employees;
+create table EmpTest as select * from Emp;
 
 --q2
-insert into emptest(employee_id,first_name,salary) values (9999,user,5000);
-commit;
+INSERT INTO EmpTest (empno, ename, sal)VALUES (9999, USER, 5000);
+
+COMMIT;
 
 --q3
-update EmpTest set salary=salary*1.15 where first_name='TURNER';
-commit;
-select * from EmpTest where first_name='TURNER';
+UPDATE EmpTest SET sal = sal * 1.15 WHERE ename = 'TURNER';
+
+COMMIT;
+
+SELECT empno, ename, sal FROM EmpTest WHERE ename = 'TURNER';
 
 --q4
-update EmpTest set salary=(select salary from emptest where first_name='SCOTT') where first_name='SMITH';
-commit;
+UPDATE EmpTest SET sal = (SELECT sal FROM EmpTest WHERE empno = 7788)WHERE empno = 7369;
+COMMIT;
 
 --q5
-UPDATE EmpTest
-SET salary = salary * 1.10
-WHERE department_id IN (
-    SELECT d.department_id
-    FROM departments d
-    JOIN locations l
-        ON d.location_id = l.location_id
-    WHERE l.city = 'New York'
-);
+UPDATE EmpTest SET sal = sal * 1.10 WHERE deptno IN (SELECT deptno FROM dept WHERE loc = 'NEW YORK');
 
 COMMIT;
 
 --q6
-UPDATE EmpTest
-SET comm = NULL;
+UPDATE EmpTest SET comm = NULL;
 
 COMMIT;
 
 --q7
-DELETE FROM EmpTest
-WHERE department_id IN (
-    SELECT department_id
-    FROM departments
-    WHERE department_name = 'Sales'
-);
+DELETE FROM EmpTest WHERE deptno IN (SELECT deptno FROM dept WHERE dname = 'SALES');
 
 COMMIT;
 
 --q8
-delete from EmpTest where department_id in(select department_id from departments where department_name=upper('&'));
-commit;
+DELETE FROM EmpTest WHERE mgr = (SELECT empno FROM EmpTest WHERE ename = UPPER('&ENAME'));
+
+COMMIT;
 
 --q9
-create table emp2 as select employee_id,first_name,salary from employees where 1=2;
+CREATE TABLE Emp2 AS SELECT empno, ename, sal FROM emp WHERE 1 = 2;
 
 --q10
-create table emp3 as select employee_id,job_id from employees where 1=2;
+CREATE TABLE Emp3 AS SELECT empno, job FROM emp WHERE 1 = 2;
 
 --q11
 INSERT ALL
-    INTO Emp2 (employee_id, first_name, salary)
-    VALUES (employee_id, first_name, salary)
+    INTO Emp2 (empno, ename, sal)
+    VALUES (empno, ename, sal)
 
-    INTO Emp3 (employee_id, job_id)
-    VALUES (employee_id, job_id)
+    INTO Emp3 (empno, job)
+    VALUES (empno, job)
 
-SELECT employee_id,
-       first_name,
-       salary,
-       job_id
-FROM employees;
-commit;
+SELECT empno, ename, sal, job FROM emp;
+
+COMMIT;
 
 --q12
-truncate table emp2;
-insert into emp2(employee_id,first_name,salary) values(7788,'SMITH',4500),(7654,'JACK',3500);
+TRUNCATE TABLE Emp2;
+INSERT INTO Emp2 (empno, ename, sal) VALUES (7788, 'SMITH', 4500);
+
+INSERT INTO Emp2 (empno, ename, sal) VALUES (7654, 'JACK', 3500);
 
 --q13
 commit;
 
 --q14
-MERGE INTO Emp2 e2
-USING employees e
-ON (e2.employee_id = e.employee_id)
+MERGE INTO Emp2 e2 USING emp e ON (e2.empno = e.empno)
 
-WHEN MATCHED THEN
-UPDATE SET
-    e2.first_name = e.first_name,
-    e2.salary = e.salary
+WHEN MATCHED THEN UPDATE SET e2.ename = e.ename,e2.sal = e.sal
 
-WHEN NOT MATCHED THEN
-INSERT (employee_id, first_name, salary)
-VALUES (e.employee_id, e.first_name, e.salary);
+WHEN NOT MATCHED THEN INSERT (empno, ename, sal)VALUES (e.empno, e.ename, e.sal);
 
 --q15
-select * from emp2;
+SELECT * FROM Emp2 ORDER BY empno;
 
 --q16
 rollback;
 
 --q17
-MERGE INTO Emp2 e2
-USING employees e
-ON (e2.employee_id = e.employee_id)
+MERGE INTO Emp2 e2 USING emp e ON (e2.empno = e.empno)
 
-WHEN MATCHED THEN
-UPDATE SET
-    e2.first_name = e.first_name,
-    e2.salary = e.salary
-WHERE e2.employee_id = 7788
+WHEN MATCHED THEN UPDATE SET e2.ename = e.ename,e2.sal = e.sal WHERE e2.empno = 7788
 
-WHEN NOT MATCHED THEN
-INSERT (employee_id, first_name, salary)
-VALUES (e.employee_id, e.first_name, e.salary)
-WHERE e.salary > 3000;
+WHEN NOT MATCHED THEN INSERT (empno, ename, sal)VALUES (e.empno, e.ename, e.sal)WHERE e.sal > 3000;
 
 --q18
-select * from emp2;
-
---q19
-
+SELECT * FROM Emp2 ORDER BY empno;
