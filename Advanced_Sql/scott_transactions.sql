@@ -1,0 +1,16 @@
+-- Q20
+GRANT ALL ON emp TO wipro;
+
+-- Q21
+DELETE FROM emp WHERE deptno = 10;
+
+-- Do NOT COMMIT
+
+-- Q23
+ROLLBACK;
+
+-- Q24
+SELECT * FROM emp WHERE deptno = 10 FOR UPDATE WAIT 20;
+
+-- Q26
+ROLLBACK;

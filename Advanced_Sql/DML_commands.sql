@@ -1,3 +1,6 @@
+SET SQLBLANKLINES ON;
+SET ECHO ON;
+
 --q1
 create table EmpTest as select * from Emp;
 
